@@ -15,7 +15,7 @@ while read -r name repo branch src; do
   git -C "$repo_dir" sparse-checkout set "$src"
   cp -R "$repo_dir/$src" "$root/skills/$name"
 done <<'EOF'
-sifli-build-win OpenSiFli/SiFli-SDK main .claude/skills/sifli-build-win
+sifli-build-win OpenSiFli/SiFli-SDK main skills/sifli-build-win
 sftool OpenSiFli/sftool master skills/sftool
 sifli-sdk-codekit OpenSiFli/SiFli-SDK-CodeKit main skills/sifli-sdk-codekit
 EOF
