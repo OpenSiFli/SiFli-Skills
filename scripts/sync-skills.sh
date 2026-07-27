@@ -8,14 +8,26 @@ trap 'rm -rf "$tmp"' EXIT
 rm -rf "$root/skills"
 mkdir -p "$root/skills"
 
-while read -r name repo branch src; do
-  repo_dir="$tmp/$name"
+while read -r repo branch src; do
+  repo_name="${repo##*/}"
+  repo_dir="$tmp/$repo_name"
   git clone --quiet --depth 1 --filter=blob:none --sparse --branch "$branch" \
     "https://github.com/$repo.git" "$repo_dir"
   git -C "$repo_dir" sparse-checkout set "$src"
-  cp -R "$repo_dir/$src" "$root/skills/$name"
+
+  for skill_file in "$repo_dir/$src"/*/SKILL.md; do
+    [ -e "$skill_file" ] || continue
+    skill_dir="$(dirname "$skill_file")"
+    skill_name="$(basename "$skill_dir")"
+    target="$root/skills/$skill_name"
+    if [ -e "$target" ]; then
+      echo "Duplicate skill name: $skill_name" >&2
+      exit 1
+    fi
+    cp -R "$skill_dir" "$target"
+  done
 done <<'EOF'
-sifli-build-win OpenSiFli/SiFli-SDK main skills/sifli-build-win
-sftool OpenSiFli/sftool master skills/sftool
-sifli-sdk-codekit OpenSiFli/SiFli-SDK-CodeKit main skills/sifli-sdk-codekit
+OpenSiFli/SiFli-SDK main skills
+OpenSiFli/sftool master skills
+OpenSiFli/SiFli-SDK-CodeKit main skills
 EOF
