@@ -11,6 +11,12 @@ npx skills add OpenSiFli/SiFli-Skills --skill sftool -g -a codex -y
 npx skills add OpenSiFli/SiFli-Skills --skill '*' -g -a codex -y
 ```
 
+On Windows, `*` does not need quotes:
+
+```powershell
+npx skills add OpenSiFli/SiFli-Skills --skill * -g -a codex -y
+```
+
 With `skills@1.5.15`, `-g -a codex` installs to `~/.agents/skills`.
 
 ## Sync

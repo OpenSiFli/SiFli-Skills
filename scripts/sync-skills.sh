@@ -3,7 +3,13 @@ set -euo pipefail
 
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 tmp="$(mktemp -d)"
+table_file="$tmp/available-skills.md"
 trap 'rm -rf "$tmp"' EXIT
+
+cat > "$table_file" <<'EOF'
+| Skill | Source |
+| --- | --- |
+EOF
 
 rm -rf "$root/skills"
 mkdir -p "$root/skills"
@@ -25,9 +31,28 @@ while read -r repo branch src; do
       exit 1
     fi
     cp -R "$skill_dir" "$target"
+    printf '| `%s` | `%s` |\n' "$skill_name" "$repo" >> "$table_file"
   done
 done <<'EOF'
 OpenSiFli/SiFli-SDK main skills
 OpenSiFli/sftool master skills
 OpenSiFli/SiFli-SDK-CodeKit main skills
 EOF
+
+awk -v table_file="$table_file" '
+  $0 == "## Available Skills" {
+    print
+    print ""
+    while ((getline line < table_file) > 0) print line
+    close(table_file)
+    in_table = 1
+    next
+  }
+  in_table && /^## / {
+    in_table = 0
+    print
+    next
+  }
+  !in_table { print }
+' "$root/README.md" > "$tmp/README.md"
+mv "$tmp/README.md" "$root/README.md"
