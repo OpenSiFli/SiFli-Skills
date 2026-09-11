@@ -35,6 +35,7 @@ upstream skills are added, removed, or changed.
 
 | Skill | Source |
 | --- | --- |
+| `musb-reg-dump-analyzer` | `OpenSiFli/SiFli-SDK` |
 | `sf32lb57-add-part-number` | `OpenSiFli/SiFli-SDK` |
 | `sifli-build-win` | `OpenSiFli/SiFli-SDK` |
 | `sifli-code-review` | `OpenSiFli/SiFli-SDK` |
